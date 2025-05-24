@@ -4,12 +4,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import android.text.method.PasswordTransformationMethod;
 
 public class AddPasswordActivity extends AppCompatActivity {
     private EditText editTextServiceName, editTextUsername, editTextPassword;
+    private CheckBox checkBoxShowPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,8 +23,21 @@ public class AddPasswordActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextUsername);
         editTextPassword = findViewById(R.id.editTextPassword);
         Button buttonSavePassword = findViewById(R.id.buttonSavePassword);
+        checkBoxShowPassword = findViewById(R.id.checkBoxShowPassword);
 
         buttonSavePassword.setOnClickListener(view -> savePassword());
+
+        checkBoxShowPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Показать пароль
+                editTextPassword.setTransformationMethod(null);
+            } else {
+                // Скрыть пароль
+                editTextPassword.setTransformationMethod(new PasswordTransformationMethod());
+            }
+            // Устанавливаем курсор в конец
+            editTextPassword.setSelection(editTextPassword.length());
+        });
     }
 
     private void savePassword() {

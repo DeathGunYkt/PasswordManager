@@ -2,8 +2,10 @@ package com.example.passwordmanager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +23,32 @@ public class RegisterActivity extends AppCompatActivity {
         editTextConfirmPassword = findViewById(R.id.editTextConfirmPassword);
         Button buttonRegister = findViewById(R.id.buttonRegister);
 
+        CheckBox checkBoxShowPassword = findViewById(R.id.checkBoxShowPassword);
+        CheckBox checkBoxShowConfirmPassword = findViewById(R.id.checkBoxShowConfirmPassword);
+
         buttonRegister.setOnClickListener(view -> registerUser());
+
+        checkBoxShowPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Показать пароль
+                editTextNewPassword.setTransformationMethod(null);
+            } else {
+                // Скрыть пароль
+                editTextNewPassword.setTransformationMethod(new PasswordTransformationMethod());
+            }
+            editTextNewPassword.setSelection(editTextNewPassword.length()); // Устанавливаем курсор в конец
+        });
+
+        checkBoxShowConfirmPassword.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Показать подтверждение пароля
+                editTextConfirmPassword.setTransformationMethod(null);
+            } else {
+                // Скрыть подтверждение пароля
+                editTextConfirmPassword.setTransformationMethod(new PasswordTransformationMethod());
+            }
+            editTextConfirmPassword.setSelection(editTextConfirmPassword.length()); // Устанавливаем курсор в конец
+        });
     }
 
     private void registerUser() {
