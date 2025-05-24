@@ -1,6 +1,7 @@
 package com.example.passwordmanager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -56,16 +57,30 @@ public class RegisterActivity extends AppCompatActivity {
         String password = editTextNewPassword.getText().toString().trim();
         String confirmPassword = editTextConfirmPassword.getText().toString().trim();
 
-        if (password.equals(confirmPassword)) {
-            // Сохраните логин и пароль
-            getSharedPreferences("users", MODE_PRIVATE)
-                    .edit()
-                    .putString(email, password)
-                    .apply(); // Сохраняем в SharedPreferences
+        // Проверка на пустой электронный адрес
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Пожалуйста, заполните все поля", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            Toast.makeText(this, "Регистрация успешна!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+        // Проверка на совпадение паролей
+        if (password.equals(confirmPassword)) {
+            // Вытаскиваем SharedPreferences для проверки существующих пользователей
+            SharedPreferences sharedPreferences = getSharedPreferences("users", MODE_PRIVATE);
+
+            // Проверка, если email уже существует
+            if (sharedPreferences.contains(email)) {
+                Toast.makeText(this, "Этот логин уже существует", Toast.LENGTH_SHORT).show();
+            } else {
+                // Сохраняем логин и пароль
+                sharedPreferences.edit()
+                        .putString(email, password)
+                        .apply(); // Сохраняем в SharedPreferences
+
+                Toast.makeText(this, "Регистрация успешна!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+            }
         } else {
             Toast.makeText(this, "Пароли не совпадают", Toast.LENGTH_SHORT).show();
         }
